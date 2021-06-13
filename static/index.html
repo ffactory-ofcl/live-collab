@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>LiveCollab</title>
+</head>
+<body>
+<h1>Welcome to LiveCollab!</h1>
+<p>To get started, create a new collab</p>
+<form id="create-collab-form">
+  <input id="collab-name-input" placeholder="Name your new Collab"/>
+  <button type="submit">Create</button>
+</form>
+
+<script>
+  document.getElementById("create-collab-form").onsubmit = createCollab;
+
+  function createCollab(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    let collabName = document.getElementById("collab-name-input").value;
+    window.location.href = "/collabs/" + collabName;
+
+    return false;
+  }
+</script>
+</body>
+
+</html>

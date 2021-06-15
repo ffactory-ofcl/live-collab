@@ -1,12 +1,19 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <title>LiveCollab</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/normalize.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/css/collab.css"/>
 </head>
 <body>
-<h1 id="header">LiveCollab ...</h1>
-<textarea id="collab-text" style="width: 100vw; height: 100vh;"></textarea>
+<header>
+  <a href="/"><h1>LiveCollab</h1></a>
+  <input id="collab-name"></input>
+  <span id="collab-name-status"></span>
+</header>
+<textarea id="collab-text"></textarea>
 
 <script type="text/javascript" src="/static/js/collab.js"></script>
 </body>

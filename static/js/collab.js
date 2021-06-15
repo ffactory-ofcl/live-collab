@@ -1,5 +1,7 @@
 // noinspection JSPotentiallyInvalidUsageOfClassThis
 
+let collabName = document.getElementById("collab-name");
+let collabNameStatus = document.getElementById("collab-name-status");
 let debounceCount = 0;
 
 let debounceTimer;
@@ -21,6 +23,9 @@ function debounce(func, timeout = 100, atMost = 2) {
 
 
 function main() {
+  collabNameStatus.hidden = true;
+  collabName.onkeydown = updateCollabName;
+
   let textArea = new TextArea();
   let connection = new Connection(textArea);
   textArea.listen(connection);
@@ -90,8 +95,7 @@ class TextArea {
   receivedMessage(msgJson) {
     switch (msgJson.value) {
       case ".ServerMessage$Hello":
-        let header = document.getElementById("header");
-        header.innerText = header.innerText.replace("...", msgJson.helloInfo.collabName);
+        collabName.value = msgJson.helloInfo.collabName;
         break;
       case ".ServerMessage$ContentOverride":
         this.textareaElement.value = msgJson.content;
@@ -188,6 +192,30 @@ String.prototype.hashCode = function () {
     hash = hash & hash; // Convert to 32bit integer
   }
   return hash;
+}
+
+async function updateCollabName(event) {
+  collabNameStatus.hidden = false;
+  collabNameStatus.innerText = "Press enter to save name";
+
+  if (event.keyCode === 13) { // Enter
+    collabName.blur();
+    collabNameStatus.innerText = "...";
+    event.preventDefault();
+    let oldName = collabName.value;
+    let newName = collabName.innerText.trim();
+    collabName.innerText = newName;
+    const response = await fetch("/collabs/" + oldName, {
+      method: "PATCH",
+      body: JSON.stringify({"name": newName})
+    });
+    if (response.ok) {
+      collabNameStatus.hidden = true;
+    } else {
+      collabNameStatus.innerText = "Error saving name. Please try again.";
+    }
+    console.log("update", event);
+  }
 }
 
 main()

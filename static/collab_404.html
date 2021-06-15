@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>404 - Collab not found</title>
+  <link rel="stylesheet" type="text/css" href="/static/css/normalize.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/css/index.css"/>
+</head>
+<body>
+<p>The collab you requested could not be found. You can create one instead.</p>
+<a id="index-link" href="/">Create Collab...</a>
+<script>
+  document.getElementById('index-link').href = "/?id=" + window.location.href.substring(window.location.href.indexOf('collabs/') + 'collabs/'.length)
+</script>
+</body>
+</html>

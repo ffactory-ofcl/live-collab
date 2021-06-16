@@ -8,13 +8,18 @@
   <link rel="stylesheet" type="text/css" href="/static/css/collab.css"/>
 </head>
 <body>
-<header>
-  <a href="/"><h1>LiveCollab</h1></a>
-  <input id="collab-name"></input>
-  <span id="collab-name-status"></span>
-</header>
-<textarea id="collab-text"></textarea>
-
+<div id="statusbar" onclick="hideStatusbar()"></div>
+<div id="content-wrapper">
+  <header>
+    <a id="logo-link" href="/"><h1>LiveCollab</h1></a>
+    <input id="collab-name"></input>
+    <button id="collab-name-update" class="themed" onclick="updateCollabName()" hidden="">Update name</button>
+    <div id="right">
+      <button class="themed" onclick="deleteCollab()">Delete</button>
+    </div>
+  </header>
+  <textarea id="collab-text"></textarea>
+</div>
 <script type="text/javascript" src="/static/js/collab.js"></script>
 </body>
 </html>

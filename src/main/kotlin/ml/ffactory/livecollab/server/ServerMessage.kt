@@ -15,9 +15,13 @@ sealed class ServerMessage {
 
   object Error : ServerMessage()
 
+  object Closing : ServerMessage()
+
   class ClientMessagesForwarded(val messages: List<ClientMessage>, val contentHash: Int) : ServerMessage()
 
   class ContentOverride(val content: String) : ServerMessage()
+
+  class UpdateCollabId(val name: String) : ServerMessage()
 }
 
 

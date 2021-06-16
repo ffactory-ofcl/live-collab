@@ -1,17 +1,103 @@
 body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 32px;
+}
+
+div#content-wrapper {
   height: 100vh;
   width: 100vw;
-  display: flex;
   flex-direction: column;
+  max-width: 800px;
 }
 
-textarea#collab-text {
-  height: 100%;
-  margin: 16px;
+header {
+  display: flex;
+  align-items: center;
+}
+
+header > * {
+  margin-right: 24px;
+}
+
+#logo-link {
+  color: slategrey;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+#logo-link:hover {
+  text-decoration: underline;
+  color: #6495ED;
+}
+
+#collab-name {
+  padding: 6px;
+  outline: none;
+  border: none;
+  border-bottom: 2px solid #6495ED88;
+  cursor: pointer;
   border-radius: 2px;
-  border: 1px solid #888;
 }
 
-#collab-name-status {
+#collab-name:hover {
+  background: #00000008;
+}
+
+#collab-name:focus {
+  background: #00000010;
+  border-bottom: 2px solid #6495ED;
+}
+
+#collab-text {
+  height: 100%;
+  width: 100%;
+  background: #6495ED12;
+  border: none;
+  border-left: 2px solid #888;
+  border-right: 2px solid #888;
+  padding: 12px;
+  margin-bottom: 64px;
+  outline: none;
+}
+
+#collab-text:focus {
+  background: rgba(145, 164, 186, 0.18);
+
+}
+
+#statusbar {
+  padding: 10px 16px;
+  background: white;
+  border-radius: 4px;
   color: #666;
+  position: absolute;
+  bottom: 32px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  border: inset 2px #FF000066;
+}
+
+button.themed {
+  background: none;
+  width: max-content;
+  border: 2px solid #6495ED80;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+button.themed:hover {
+  border-color: #6495ED;
+  background: #6495ED20;
+}
+
+#right {
+  flex-grow: 2;
+  height: 100%;
+  display: flex;
+  justify-content: end;
+  margin-right: 0;
 }

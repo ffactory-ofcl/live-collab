@@ -3,6 +3,7 @@ package ml.ffactory.livecollab.server
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
@@ -40,6 +41,24 @@ fun Application.module() {
           call.respond("OK")
         }
       }
+      patch {
+        val updateRequest = call.receiveOrNull<UpdateCollabNameRequest>() ?: throw IllegalArgumentException("Missing patch body")
+        val collabId = call.parameters["collabId"] ?: throw IllegalArgumentException("Missing collabId")
+        val collab = CollabManager.get(collabId)
+        if (collab != null) {
+          collab.collabId = updateRequest.name
+        } else {
+          call.respond(HttpStatusCode.NotFound, "Collab does not exist")
+        }
+      }
+      delete {
+        val collabId = call.parameters["collabId"] ?: throw IllegalArgumentException("Missing collabId")
+        if (CollabManager.get(collabId) != null) {
+          CollabManager.delete(collabId)
+        } else {
+          call.respond(HttpStatusCode.NotFound, "Collab does not exist")
+        }
+      }
     }
 
     webSocket("/connect/{collabId}") {
@@ -48,3 +67,5 @@ fun Application.module() {
     }
   }
 }
+
+class UpdateCollabNameRequest(val name: String)

@@ -1,13 +1,14 @@
 // noinspection JSPotentiallyInvalidUsageOfClassThis
 
 let collabName = document.getElementById("collab-name");
-let collabNameStatus = document.getElementById("collab-name-status");
+let statusbar = document.getElementById("statusbar");
+let collabNameUpdateButton = document.getElementById("collab-name-update");
 let debounceCount = 0;
 
 let debounceTimer;
 
 function debounce(func, timeout = 100, atMost = 2) {
-  if (debounceCount >= atMost) {
+  if (atMost !== -1 && debounceCount >= atMost) {
     debounceCount = 0;
     clearTimeout(debounceTimer);
     func();
@@ -23,8 +24,9 @@ function debounce(func, timeout = 100, atMost = 2) {
 
 
 function main() {
-  collabNameStatus.hidden = true;
+  statusbar.hidden = true;
   collabName.onkeydown = updateCollabName;
+  collabName.onkeyup = updateCollabName;
 
   let textArea = new TextArea();
   let connection = new Connection(textArea);
@@ -126,9 +128,8 @@ class TextArea {
 
 class Connection {
   constructor(textArea) {
-    let collabId = window.location.href.substring(window.location.href.lastIndexOf("/"));
     let protocol = window.location.protocol.replace(/^http(s)?:/, "ws$1:");
-    let url = protocol + window.location.host + "/connect" + collabId
+    let url = protocol + window.location.host + "/connect/" + getCollabId()
 
     this.websocket = new WebSocket(url);
     this.websocket.onmessage = ((m) => {
@@ -194,28 +195,53 @@ String.prototype.hashCode = function () {
   return hash;
 }
 
-async function updateCollabName(event) {
-  collabNameStatus.hidden = false;
-  collabNameStatus.innerText = "Press enter to save name";
+function getCollabId() {
+  return window.location.href.substring(window.location.href.lastIndexOf("/") + 1);
+}
 
-  if (event.keyCode === 13) { // Enter
+async function updateCollabName(event) {
+  let newCollabId = collabName.value.trim();
+  collabNameUpdateButton.hidden = newCollabId === getCollabId();
+
+  if (!event || event.keyCode === 13) { // Enter
     collabName.blur();
-    collabNameStatus.innerText = "...";
-    event.preventDefault();
-    let oldName = collabName.value;
-    let newName = collabName.innerText.trim();
-    collabName.innerText = newName;
-    const response = await fetch("/collabs/" + oldName, {
+    let buttonText = collabNameUpdateButton.innerText;
+    collabNameUpdateButton.innerText = "...";
+    if (event) event.preventDefault();
+    collabName.value = newCollabId;
+    const response = await fetch("/collabs/" + getCollabId(), {
       method: "PATCH",
-      body: JSON.stringify({"name": newName})
+      body: JSON.stringify({"name": newCollabId})
     });
     if (response.ok) {
-      collabNameStatus.hidden = true;
+      statusbar.hidden = true;
+      collabNameUpdateButton.hidden = true;
+      window.location.href = "/collabs/" + newCollabId;
     } else {
-      collabNameStatus.innerText = "Error saving name. Please try again.";
+      showStatusbar("Error saving name. Please try again.");
     }
-    console.log("update", event);
+    collabNameUpdateButton.innerText = buttonText;
   }
+}
+
+async function deleteCollab() {
+  const response = await fetch("/collabs/" + getCollabId(), {method: "DELETE"});
+  if (response.ok) {
+    statusbar.hidden = true;
+    window.location.href = "/";
+  } else {
+    showStatusbar("Error deleting. Please try again.");
+  }
+}
+
+function showStatusbar(message) {
+  statusbar.hidden = false;
+  statusbar.innerText = message;
+  debounce(hideStatusbar, 3000, -1);
+}
+
+function hideStatusbar() {
+  statusbar.hidden = true;
 }
 
 main()

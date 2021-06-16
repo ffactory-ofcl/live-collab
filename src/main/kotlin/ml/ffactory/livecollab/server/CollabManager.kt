@@ -8,4 +8,8 @@ object CollabManager {
   fun get(collabId: String) = collabs[collabId]
 
   fun create(collabId: String) = Collab(collabId).also { collabs[collabId] = it }
+
+  fun delete(collabId: String) {
+    collabs.remove(collabId)?.also { it.close() }
+  }
 }

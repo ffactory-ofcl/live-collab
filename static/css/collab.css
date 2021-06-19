@@ -116,7 +116,7 @@ p {
 }
 
 a {
-  color: #333f4a;
+  color: #0a3359;
 }
 
 a:visited {
@@ -184,4 +184,16 @@ label {
 
 #create-collab-button:active {
   border-color: transparent;
+}
+
+body#not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100vh;
+}
+
+body#not-found > a {
+  color: #2e4471;
 }

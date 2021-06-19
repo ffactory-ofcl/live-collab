@@ -7,14 +7,11 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.http.cio.websocket.*
 import io.ktor.websocket.*
 import kotlinx.coroutines.runBlocking
-import java.util.concurrent.atomic.AtomicInteger
 
 class Connection(
   private val session: DefaultWebSocketSession,
   private val collab: Collab,
 ) {
-  val name = "user${lastId.getAndIncrement()}"
-
   private val json = ObjectMapper()
       .registerModule(KotlinModule())
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -43,9 +40,8 @@ class Connection(
         receivedText(this, msgStr)
       }
     } catch (e: Exception) {
-      println(e.localizedMessage)
+      System.err.println(e.localizedMessage)
     } finally {
-      println("Removing $this!")
       collab.disconnect(this)
     }
   }
@@ -63,8 +59,4 @@ class Connection(
 
   private inline fun <reified T> String.deserialize(): T = json.readValue(this)
 
-
-  companion object {
-    var lastId = AtomicInteger(0)
-  }
 }

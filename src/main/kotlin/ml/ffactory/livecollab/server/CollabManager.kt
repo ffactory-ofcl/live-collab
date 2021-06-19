@@ -1,16 +1,19 @@
 package ml.ffactory.livecollab.server
 
-import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 object CollabManager {
-  private val collabs: MutableMap<String, Collab> = Collections.synchronizedMap(LinkedHashMap())
+  private val collabs: MutableMap<String, Collab> = ConcurrentHashMap(LinkedHashMap())
 
   fun get(collabId: String) = collabs[collabId]
 
   fun create(collabId: String) = Collab(collabId).also { collabs[collabId] = it }
 
-  fun delete(collabId: String) {
-    collabs.remove(collabId)?.also { it.close() }
+  /** Returns true if successful */
+  fun delete(collabId: String): Boolean {
+    return get(collabId)?.let { collab ->
+      collabs.remove(collabId)?.also { collab.close() }
+    } != null
   }
 
   fun rename(oldId: String, newId: String): Boolean {

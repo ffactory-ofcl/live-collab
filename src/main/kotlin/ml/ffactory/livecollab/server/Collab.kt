@@ -47,7 +47,8 @@ class Collab(
   private suspend fun receivedMessage(connection: Connection, msg: ClientMessage): ClientMessage? {
     fun Int.coerce(): Int = this.coerceIn(0, content.length) // coerceAtLeast(1) - 1
 
-    println("Collab $id received $msg")
+    // Enable if you want to log received messages
+    //println("Collab $id received $msg")
     when (msg) {
       is ClientMessage.TextEdit -> {
         content = when (msg.action) {
@@ -63,7 +64,6 @@ class Collab(
           }
           is TextEditAction.Replace -> msg.action.s
         }
-        println("content:\n")
         return msg
       }
       ClientMessage.Refresh -> {

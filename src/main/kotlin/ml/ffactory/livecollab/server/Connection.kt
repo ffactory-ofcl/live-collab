@@ -20,7 +20,7 @@ class Connection(
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 
   init {
-    send(ServerMessage.Hello(ServerMessage.Hello.HelloInfo(collab.name)))
+    send(ServerMessage.Hello(ServerMessage.Hello.HelloInfo(collab.id)))
     send(ServerMessage.ContentOverride(collab.content))
   }
 

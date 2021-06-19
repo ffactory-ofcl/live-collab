@@ -7,11 +7,11 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 class Collab(
-  collabId: String,
+  id: String,
   var content: String = Constants.collabStartupContent,
   private val connections: MutableSet<Connection> = Collections.synchronizedSet(LinkedHashSet()),
 ) {
-  var collabId: String = collabId
+  var id: String = id
     set(value) {
       field = value
       updatedId()
@@ -28,7 +28,7 @@ class Collab(
   }
 
   private fun updatedId() {
-    connections.forEach { it.send(ServerMessage.UpdateCollabId(this.collabId)) }
+    connections.forEach { it.send(ServerMessage.UpdateCollabId(this.id)) }
   }
 
   @Synchronized
@@ -47,7 +47,7 @@ class Collab(
   private suspend fun receivedMessage(connection: Connection, msg: ClientMessage): ClientMessage? {
     fun Int.coerce(): Int = this.coerceIn(0, content.length) // coerceAtLeast(1) - 1
 
-    println("Collab $collabId received $msg")
+    println("Collab $id received $msg")
     when (msg) {
       is ClientMessage.TextEdit -> {
         content = when (msg.action) {

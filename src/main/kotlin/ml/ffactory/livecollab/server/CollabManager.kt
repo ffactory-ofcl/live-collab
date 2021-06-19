@@ -12,4 +12,12 @@ object CollabManager {
   fun delete(collabId: String) {
     collabs.remove(collabId)?.also { it.close() }
   }
+
+  fun rename(oldId: String, newId: String): Boolean {
+    return get(oldId)?.let { collab ->
+      collab.id = newId
+      collabs.remove(oldId)
+      collabs[newId] = collab
+    } != null
+  }
 }

@@ -5,6 +5,9 @@ let statusbar = document.getElementById("statusbar");
 let collabNameUpdateButton = document.getElementById("collab-name-update");
 let debounceCount = 0;
 
+// When selecting text, resend all text to make sure it's correct even if select + type replaces the selected text
+let selectedText = false;
+
 let debounceTimer;
 
 function debounce(func, timeout = 100, atMost = 2) {
@@ -47,32 +50,43 @@ class TextArea {
     let self = this;
     let batches = [];
 
+    document.addEventListener("select", function (event) {
+      if (event.target.id === "collab-text") {
+        selectedText = self.textareaElement.selectionStart - self.textareaElement.selectionEnd !== 0;
+      }
+    });
     this.textareaElement.addEventListener("input", function (event) {
 
-      //let result = self.calculateChanges(e.target.selectionStart);
-      let deleteLen;
-      switch (event.inputType) {
-        case "insertText":
-          batches.push(self.connection.insert(event.data, event.target.selectionStart - event.data.length));
-          break;
-        case "deleteContentBackward":
-        case "deleteWordBackward":
-          deleteLen = self.textareaOldValue.length - event.target.value.length;
-          batches.push(self.connection.delete(deleteLen, event.target.selectionStart + deleteLen));
-          break;
-        case "deleteContentForward":
-        case "deleteWordForward":
-          deleteLen = self.textareaOldValue.length - event.target.value.length;
-          batches.push(self.connection.delete(deleteLen, event.target.selectionStart + deleteLen + 1));
-          break;
-        case "insertLineBreak":
-          batches.push(self.connection.insert("\n", event.target.selectionStart - 1));
-          break;
-        case "":
-          self.connection.refreshContent();
-        default:
-          console.log("sending replace because i got input type " + event.inputType.toString());
-          batches.push(self.connection.replace(self.textareaElement.value));
+      if (selectedText) {
+        // Have selected text before -> can't calculate batch -> replace
+        batches.push(self.connection.replace(self.textareaElement.value));
+        selectedText = false;
+      } else {
+        let deleteLen;
+        switch (event.inputType) {
+          case "insertText":
+            batches.push(self.connection.insert(event.data, event.target.selectionStart - event.data.length));
+            break;
+          case "deleteContentBackward":
+          case "deleteWordBackward":
+            deleteLen = self.textareaOldValue.length - event.target.value.length;
+            batches.push(self.connection.delete(deleteLen, event.target.selectionStart + deleteLen));
+            break;
+          case "deleteContentForward":
+          case "deleteWordForward":
+            deleteLen = self.textareaOldValue.length - event.target.value.length;
+            batches.push(self.connection.delete(deleteLen, event.target.selectionStart + deleteLen + 1));
+            break;
+          case "insertLineBreak":
+            batches.push(self.connection.insert("\n", event.target.selectionStart - 1));
+            break;
+          case "":
+            self.connection.refreshContent();
+            break;
+          default:
+            console.log("sending replace because i got input type " + event.inputType.toString());
+            batches.push(self.connection.replace(self.textareaElement.value));
+        }
       }
       self.textareaOldValue = self.textareaElement.value;
       debounce(function () {
@@ -83,11 +97,20 @@ class TextArea {
   }
 
   insert(pos, s) {
+    let cursorPos = this.textareaElement.selectionStart;
+    let selectionLength = this.textareaElement.selectionEnd - cursorPos;
+    cursorPos += cursorPos > pos ? s.length : 0;
     this.textareaElement.value = this.textareaElement.value.substr(0, pos) + s + this.textareaElement.value.substr(pos);
+    this.textareaElement.selectionStart = cursorPos;
+    this.textareaElement.selectionEnd = cursorPos + selectionLength;
   }
 
   replace(s) {
+    let cursorPos = this.textareaElement.selectionStart;
+    let selectionLength = this.textareaElement.selectionEnd - cursorPos;
     this.textareaElement.value = s;
+    this.textareaElement.selectionStart = cursorPos;
+    this.textareaElement.selectionEnd = cursorPos + selectionLength;
   }
 
   delete(pos, c) {
@@ -211,7 +234,8 @@ async function updateCollabName(event) {
     collabName.value = newCollabId;
     const response = await fetch("/collabs/" + getCollabId(), {
       method: "PATCH",
-      body: JSON.stringify({"name": newCollabId})
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({"id": newCollabId})
     });
     if (response.ok) {
       statusbar.hidden = true;
@@ -225,7 +249,10 @@ async function updateCollabName(event) {
 }
 
 async function deleteCollab() {
-  const response = await fetch("/collabs/" + getCollabId(), {method: "DELETE"});
+  const response = await fetch("/collabs/" + getCollabId(), {
+    method: "DELETE",
+    headers: {"Content-Type": "application/json"}
+  });
   if (response.ok) {
     statusbar.hidden = true;
     window.location.href = "/";

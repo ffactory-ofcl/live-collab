@@ -3,12 +3,21 @@ const errorText = document.getElementById("create-collab-error");
 const collabName = document.getElementById("create-collab-name");
 const collabDuration = document.getElementById("create-collab-duration");
 
-let urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get("id") !== null) {
-  collabName.value = urlParams.get("id");
-  window.history.replaceState(null, null, "/");
-} else {
-  collabName.value = "";
+function main() {
+  let urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("id") !== null) {
+    collabName.value = urlParams.get("id");
+    window.history.replaceState(null, null, "/");
+  } else {
+    collabName.value = "";
+  }
+
+  const collabNameInput = document.getElementById("create-collab-name");
+  const collabCreateButton = document.getElementById("create-collab-button");
+  collabCreateButton.disabled = !collabNameInput.value.length > 0;
+  collabNameInput.addEventListener("input", () => {
+    collabCreateButton.disabled = !collabNameInput.value.length > 0;
+  });
 }
 
 async function createCollab(event) {
@@ -30,3 +39,5 @@ async function createCollab(event) {
 
   return false;
 }
+
+main();

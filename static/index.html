@@ -4,36 +4,47 @@
   <meta charset="UTF-8"/>
   <title>LiveCollab</title>
   <link rel="stylesheet" type="text/css" href="/static/css/normalize.css"/>
-  <link rel="stylesheet" type="text/css" href="/static/css/index.css"/>
+  <link rel="stylesheet" type="text/css" href="/static/css/collab.css"/>
 </head>
 <body>
-<header>
-  <h1>LiveCollab</h1>
-</header>
-<section>
-  <h2 class="title">What is this?</h2>
-  <p>LiveCollab is a service that allows people to collaborate on a single document in real time.</p>
-  <p>It was developed by Filippo Orru in 2021 as part of Web Services, MSD19. Source code:
-    <a href="https://git-iit.fh-joanneum.at/orrufili19/live-collab">https://git-iit.fh-joanneum.at/orrufili19/live-collab</a>
-  </p>
-  <p>To get started, create a new collab</p>
-</section>
-<div class="create-collab">
-  <form id="create-collab-form">
-    <label for="create-collab-name">Name your new collab</label>
-    <input id="create-collab-name" placeholder="Name"/>
-    <label for="create-collab-duration">Delete collab after:</label>
-    <select id="create-collab-duration">
-      <option value="1">1 day</option>
-      <option value="7">7 days</option>
-      <option value="30">30 days</option>
-    </select>
-    <button type="submit">Create</button>
-    <span hidden="hidden" id="create-collab-error">An error occurred. Please reload the page and try again.</span>
-  </form>
+<div id="content-wrapper">
+  <header>
+    <a id="logo-link" href="/"><h1>LiveCollab</h1></a>
+  </header>
+  <section>
+    <h2 class="subtitle">What is this?</h2>
+    <p>LiveCollab is a service that allows people to collaborate on a single document in real time.</p>
+    <p>It was developed by Filippo Orru in 2021 as part of Web Services, MSD19. Source code:
+      <a href="https://git-iit.fh-joanneum.at/orrufili19/live-collab">https://git-iit.fh-joanneum.at/orrufili19/live-collab</a>
+    </p>
+    <p>To get started, create a new collab</p>
+  </section>
+  <section id="create-collab">
+    <form id="create-collab-form">
+      <div class="stack v">
+        <div class="stack h">
+          <div class="stack v margin-r">
+            <label for="create-collab-name">Name your new collab</label>
+            <input id="create-collab-name" placeholder="Name"/>
+          </div>
+          <div class="stack v">
+            <label for="create-collab-duration">Delete collab after</label>
+            <select id="create-collab-duration">
+              <option value="1">1 day</option>
+              <option value="7">7 days</option>
+              <option value="30">30 days</option>
+            </select>
+          </div>
+        </div>
 
+        <button id="create-collab-button" type="submit" disabled="">Create</button>
+
+        <span hidden="hidden" id="create-collab-error">An error occurred. Please reload the page and try again.</span>
+      </div>
+    </form>
+
+  </section>
 </div>
-
 <script type="text/javascript" src="/static/js/main.js"></script>
 </body>
 

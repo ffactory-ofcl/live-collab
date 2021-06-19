@@ -4,6 +4,7 @@
     <module name="live-collab.main" />
     <method v="2">
       <option name="Make" enabled="true" />
+      <option name="LaunchBrowser.Before.Run" url="http://localhost:8080/" />
     </method>
   </configuration>
 </component>

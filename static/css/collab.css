@@ -13,6 +13,7 @@ div#content-wrapper {
 }
 
 header {
+  margin-top: 24px;
   display: flex;
   align-items: center;
 }
@@ -25,6 +26,7 @@ header > * {
   color: slategrey;
   text-decoration: none;
   transition: all 0.2s;
+  font-family: Courier, serif;
 }
 
 #logo-link:hover {
@@ -100,4 +102,86 @@ button.themed:hover {
   display: flex;
   justify-content: end;
   margin-right: 0;
+}
+
+.subtitle {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6495ED;
+}
+
+p {
+  color: #666666;
+}
+
+a {
+  color: #333f4a;
+}
+
+a:visited {
+  color: #333f4a;
+}
+
+section#create-collab {
+  margin: 48px 0;
+}
+
+section#create-collab > form {
+  display: flex;
+  align-items: center;
+
+  margin: 0 64px;
+  border-radius: 6px;
+  border: 2px solid #ACBFDF;
+  padding: 24px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.stack.margin-r {
+  margin-right: 12px;
+}
+
+.stack.h {
+  flex-direction: row;
+}
+
+.stack > * {
+  margin-bottom: 8px;
+}
+
+label {
+  color: #516079;
+}
+
+#create-collab-button {
+  text-transform: uppercase;
+  font-size: 1.25rem;
+  align-self: center;
+  color: #2e4471;
+  background: #85abfa20;
+  width: max-content;
+  border: 3px inset rgba(15, 29, 57, 0.2);
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+#create-collab-button:disabled {
+  color: slategrey;
+  border: none !important;
+}
+
+#create-collab-button:hover {
+  border-color: #6a9bfa;
+}
+
+#create-collab-button:active {
+  border-color: transparent;
 }

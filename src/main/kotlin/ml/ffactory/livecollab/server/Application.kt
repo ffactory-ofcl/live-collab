@@ -1,8 +1,10 @@
 package ml.ffactory.livecollab.server
 
 import io.ktor.application.*
+import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.http.content.*
+import io.ktor.jackson.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -15,6 +17,10 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 @Suppress("unused")
 fun Application.module() {
   install(WebSockets)
+  install(ContentNegotiation) {
+    jackson()
+  }
+
   routing {
     static("static") {
       files("static")
@@ -42,11 +48,10 @@ fun Application.module() {
         }
       }
       patch {
-        val updateRequest = call.receiveOrNull<UpdateCollabNameRequest>() ?: throw IllegalArgumentException("Missing patch body")
+        val updateRequest = call.receive<UpdateCollabNameRequest>()
         val collabId = call.parameters["collabId"] ?: throw IllegalArgumentException("Missing collabId")
-        val collab = CollabManager.get(collabId)
-        if (collab != null) {
-          collab.collabId = updateRequest.name
+        if (CollabManager.rename(collabId, updateRequest.id)) {
+          call.respond(HttpStatusCode.OK)
         } else {
           call.respond(HttpStatusCode.NotFound, "Collab does not exist")
         }
@@ -68,4 +73,4 @@ fun Application.module() {
   }
 }
 
-class UpdateCollabNameRequest(val name: String)
+data class UpdateCollabNameRequest(val id: String)
